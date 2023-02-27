@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>自定义图片全屏漂浮效果</title>
+</head>
+<body style="margin:0;padding:0;">
+	<canvas id="canvas" style="display:block;"></canvas>
+
+	<script>
+		// 获取图片地址
+		var imgUrl = prompt("请输入图片地址:");
+
+		// 获取画布元素和上下文
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+
+		// 定义画布尺寸
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+
+		// 创建图片对象
+		var image = new Image();
+		image.src = imgUrl;
+
+		// 定义图片属性
+		var imgWidth, imgHeight, imgX, imgY;
+		image.onload = function() {
+			imgWidth = image.width;
+			imgHeight = image.height;
+			imgX = Math.random() * (canvas.width - imgWidth);
+			imgY = Math.random() * (canvas.height - imgHeight);
+			loop();
+		};
+
+		// 定义图片属性变化的值
+		var speedX = Math.random() * 4 + 2; // 加快速度
+		var speedY = Math.random() * 4 + 2; // 加快速度
+		var directionX = 1;
+		var directionY = 1;
+
+		// 定义爆炸效果属性
+		var explodeSize = 0;
+		var explodeMaxSize = 100;
+		var explodeSpeed = 10;
+		var explodeX = 0;
+		var explodeY = 0;
+
+		// 循环绘制函数
+		function loop() {
+			// 清空画布
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+			// 绘制图片或爆炸效果
+			if (explodeSize == 0) {
+				ctx.drawImage(image, imgX, imgY, imgWidth, imgHeight);
+			} else {
+				ctx.beginPath();
+				ctx.arc(explodeX, explodeY, explodeSize, 0, 2 * Math.PI);
+				ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+				ctx.fill();
+				explodeSize += explodeSpeed;
+			}
+
+			// 更新图片位置
+			imgX += speedX * directionX;
+			imgY += speedY * directionY;
+
+			// 碰壁反弹并触发爆炸效果
+			if (imgX + imgWidth >= canvas.width || imgX <= 0) {
+				directionX = -directionX;
+				if (explodeSize == 0) {
+					explodeX = imgX + imgWidth / 2;
+					explodeY = imgY + imgHeight / 2;
+					explodeSize = 1;
+				}
+			}
+			if (imgY + imgHeight >= canvas.height || imgY <= 0) {
+				directionY = -directionY;
+				if (explodeSize == 0) {
+					explodeX = imgX + imgWidth / 2;
+					explodeY = imgY + imgHeight / 2;
+					explodeSize = 1;
+				}
+			}
+
+			// 重复执行
+			requestAnimationFrame(loop);
+		}
+	</script>
+</

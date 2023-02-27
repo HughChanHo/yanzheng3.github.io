@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>呼吸灯效果的上宽下窄蒂芙尼蓝动态气球</title>
+  <style>
+    body {
+      background-color: #f2f2f2;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas"></canvas>
+  <script>
+    // 获取 canvas 元素和上下文
+    var canvas = document.getElementById('myCanvas');
+    var ctx = canvas.getContext('2d');
+
+    // 设置画布宽高
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // 定义气球颜色
+    var balloonColor = '#0abab5';
+
+    // 定义气球属性
+    var balloon = {
+      x: canvas.width / 2,
+      y: canvas.height - 50,
+      radius: 100,
+      speed: 2,
+      direction: 'up'
+    };
+
+    // 绘制气球函数
+    function drawBalloon() {
+      ctx.beginPath();
+      var gradient = ctx.createRadialGradient(balloon.x, balloon.y, 0, balloon.x, balloon.y, balloon.radius);
+      gradient.addColorStop(0, balloonColor);
+      gradient.addColorStop(0.3, balloonColor);
+      gradient.addColorStop(1, '#fff');
+      ctx.fillStyle = gradient;
+      ctx.moveTo(balloon.x - balloon.radius / 2, balloon.y - balloon.radius);
+      ctx.bezierCurveTo(balloon.x - balloon.radius, balloon.y - balloon.radius * 1.5,
+                        balloon.x + balloon.radius, balloon.y - balloon.radius * 1.5,
+                        balloon.x + balloon.radius / 2, balloon.y - balloon.radius);
+      ctx.bezierCurveTo(balloon.x + balloon.radius / 2, balloon.y - balloon.radius / 2,
+                        balloon.x, balloon.y,
+                        balloon.x - balloon.radius / 2, balloon.y - balloon.radius);
+      ctx.fill();
+    }
+
+    // 更新气球大小函数
+    function updateBalloon() {
+      if (balloon.direction === 'up') {
+        balloon.radius += 1;
+        if (balloon.radius >= 120) {
+          balloon.direction = 'down';
+        }
+      } else if (balloon.direction === 'down') {
+        balloon.radius -= 1;
+        if (balloon.radius <= 80) {
+          balloon.direction = 'up';
+        }
+      }
+    }
+
+    // 动画函数
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBalloon();
+      updateBalloon();
+      requestAnimationFrame(animate);
+    }
+
+    // 启动动画
+    animate();
+  </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>动态爱心气球</title>
+  <style>
+    body {
+      background-color: #f2f2f2;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas"></canvas>
+  <script>
+    // 获取 canvas 元素和上下文
+    var canvas = document.getElementById('myCanvas');
+    var ctx = canvas.getContext('2d');
+
+    // 设置画布宽高
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // 定义气球颜色
+    var balloonColor = '#E91E63';
+
+    // 定义爱心颜色
+    var heartColor = '#F44336';
+
+    // 定义气球属性
+    var balloon = {
+      x: canvas.width / 2,
+      y: canvas.height - 50,
+      radius: 50,
+      speed: 2,
+      direction: 'up'
+    };
+
+    // 定义爱心属性
+    var heart = {
+      x: balloon.x,
+      y: balloon.y - balloon.radius,
+      size: 20
+    };
+
+    // 绘制爱心函数
+    function drawHeart() {
+      ctx.beginPath();
+      ctx.fillStyle = heartColor;
+      ctx.moveTo(heart.x, heart.y + heart.size);
+      ctx.bezierCurveTo(heart.x + heart.size, heart.y - heart.size,
+                        heart.x + heart.size * 2.5, heart.y + heart.size * 1.5,
+                        heart.x, heart.y + heart.size * 3);
+      ctx.bezierCurveTo(heart.x - heart.size * 2.5, heart.y + heart.size * 1.5,
+                        heart.x - heart.size, heart.y - heart.size,
+                        heart.x, heart.y + heart.size);
+      ctx.fill();
+    }
+
+    // 绘制气球函数
+    function drawBalloon() {
+      ctx.beginPath();
+      ctx.fillStyle = balloonColor;
+      ctx.arc(balloon.x, balloon.y, balloon.radius, 0, Math.PI * 2, true);
+      ctx.fill();
+    }
+
+    // 更新气球位置函数
+    function updateBalloon() {
+      if (balloon.direction === 'up') {
+        balloon.y -= balloon.speed;
+        if (balloon.y <= balloon.radius) {
+          balloon.direction = 'down';
+        }
+      } else if (balloon.direction === 'down') {
+        balloon.y += balloon.speed;
+        if (balloon.y >= canvas.height - balloon.radius) {
+          balloon.direction = 'up';
+        }
+      }
+      balloon.x += Math.sin(balloon.y / 20);
+    }
+
+    // 动画函数
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawHeart();
+      drawBalloon();
+      updateBalloon();
+      requestAnimationFrame(animate);
+    }
+
+    // 启动动画
+    animate();
+  </script>
+</body>
+</html>

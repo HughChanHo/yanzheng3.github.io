@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Canvas Particle Animation</title>
+	<style type="text/css">
+		body {
+			margin: 0;
+			padding: 0;
+		}
+
+		canvas {
+			display: block;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<script type="text/javascript">
+		// 获取画布元素和上下文
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+
+		// 定义画布尺寸
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+
+		// 定义粒子类
+		class Particle {
+			constructor(x, y, size, color) {
+				this.x = x;
+				this.y = y;
+				this.size = size;
+				this.color = color;
+				this.speedX = Math.random() * 4 - 2;
+				this.speedY = Math.random() * 4 - 2;
+			}
+
+			// 绘制粒子
+			draw() {
+				ctx.beginPath();
+				ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+				ctx.fillStyle = this.color;
+				ctx.fill();
+			}
+
+			// 更新粒子位置
+			update() {
+				this.x += this.speedX;
+				this.y += this.speedY;
+				if (this.x + this.size > canvas.width || this.x - this.size < 0) {
+					this.speedX = -this.speedX;
+				}
+				if (this.y + this.size > canvas.height || this.y - this.size < 0) {
+					this.speedY = -this.speedY;
+				}
+			}
+		}
+
+		// 定义粒子数组
+		var particles = [];
+
+		// 添加粒子
+		for (var i = 0; i < 100; i++) {
+			particles.push(new Particle(canvas.width / 2, canvas.height / 2, Math.random() * 10, `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`));
+		}
+
+		// 循环绘制函数
+		function loop() {
+			// 清空画布
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+			// 更新和绘制粒子
+			particles.forEach(particle => {
+				particle.update();
+				particle.draw();
+			});
+
+			// 重复执行
+			requestAnimationFrame(loop);
+		}
+
+		// 开始执行
+		loop();
+	</script>
+</body>
+</html>

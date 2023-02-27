@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>动态气球</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+      // 获取画布
+      const canvas = document.getElementById("canvas");
+      const context = canvas.getContext("2d");
+
+      // 设置画布宽高
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      // 定义气球属性
+      const balloon = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        radius: 100,
+        speed: 1,
+      };
+
+      // 开始动画
+      function animate() {
+        // 画布清除
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 更新气球属性
+        balloon.radius = 50 + Math.abs(Math.sin(Date.now() / 1000)) * 50;
+
+        // 画气球
+        const gradient = context.createRadialGradient(
+          balloon.x,
+          balloon.y,
+          0,
+          balloon.x,
+          balloon.y,
+          balloon.radius
+        );
+        gradient.addColorStop(0, "red");
+        gradient.addColorStop(0.15, "orange");
+        gradient.addColorStop(0.3, "yellow");
+        gradient.addColorStop(0.5, "green");
+        gradient.addColorStop(0.65, "blue");
+        gradient.addColorStop(0.8, "indigo");
+        gradient.addColorStop(1, "violet");
+
+        context.fillStyle = gradient;
+        context.beginPath();
+        context.arc(
+          balloon.x,
+          balloon.y,
+          balloon.radius,
+          0,
+          2 * Math.PI,
+          false
+        );
+        context.fill();
+
+        // 重复动画
+        requestAnimationFrame(animate);
+      }
+
+      // 启动动画
+      animate();
+    </script>
+  </body>
+</html>

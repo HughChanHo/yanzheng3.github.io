@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>自定义图片全屏漂浮效果</title>
+</head>
+<body style="margin:0;padding:0;">
+	<canvas id="canvas" style="display:block;"></canvas>
+
+	<script>
+		// 获取图片地址
+		var imgUrl = prompt("请输入图片地址:");
+
+		// 获取画布元素和上下文
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+
+		// 定义画布尺寸
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+
+		// 创建图片对象
+		var image = new Image();
+		image.src = imgUrl;
+
+		// 定义图片属性
+		var imgWidth, imgHeight, imgX, imgY;
+		image.onload = function() {
+			imgWidth = image.width;
+			imgHeight = image.height;
+			imgX = Math.random() * (canvas.width - imgWidth);
+			imgY = Math.random() * (canvas.height - imgHeight);
+			loop();
+		};
+
+		// 定义图片属性变化的值
+		var speedX = (Math.random() * 2 + 1) * 2;
+		var speedY = (Math.random() * 2 + 1) * 2;
+		var directionX = 1;
+		var directionY = 1;
+
+		// 定义图片碰撞爆炸的状态
+		var explode = false;
+		var explodeStart = 0;
+
+		// 定义爆炸效果的参数
+		var explodeRadius = 10;
+		var explodeColor = "#ff0000";
+
+		// 循环绘制函数
+		function loop() {
+			// 清空画布
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+			if (explode) {
+				if (Date.now() - explodeStart > 500) {
+					explode = false;
+					imgX = Math.random() * (canvas.width - imgWidth);
+					imgY = Math.random() * (canvas.height - imgHeight);
+				} else {
+					// 绘制爆炸效果
+					ctx.beginPath();
+					ctx.arc(imgX + imgWidth / 2, imgY + imgHeight / 2, explodeRadius, 0, Math.PI * 2);
+					ctx.fillStyle = explodeColor;
+					ctx.fill();
+				}
+			} else {
+				// 绘制图片
+				ctx.drawImage(image, imgX, imgY, imgWidth, imgHeight);
+
+				// 更新图片位置
+				imgX += speedX * directionX;
+				imgY += speedY * directionY;
+
+				// 碰壁反弹
+				if (imgX + imgWidth >= canvas.width || imgX <= 0) {
+					directionX = -directionX;
+					explode = true;
+					explodeStart = Date.now();
+				}
+				if (imgY + imgHeight >= canvas.height || imgY <= 0) {
+					directionY = -directionY;
+					explode = true;
+					explodeStart = Date.now();
+				}
+			}
+
+			// 重复执行
+			requestAnimationFrame(loop);
+		}
+	</script>
+</body>
+</html>

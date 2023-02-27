@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Interactive Color Effect</title>
+	<style>
+		body {
+			background-color: #000;
+			color: #FFF;
+			font-family: Arial, sans-serif;
+			text-align: center;
+		}
+		
+		h1 {
+			margin-top: 100px;
+			font-size: 5em;
+			transition: all 0.5s ease-out;
+		}
+	</style>
+</head>
+<body>
+	<h1>Interactive Color Effect</h1>
+	
+	<script>
+		var body = document.getElementsByTagName("body")[0];
+		var h1 = document.getElementsByTagName("h1")[0];
+		
+		body.addEventListener("mousemove", function(event) {
+			var x = event.clientX;
+			var y = event.clientY;
+			var hue = x / window.innerWidth * 360;
+			var saturation = y / window.innerHeight * 100;
+			body.style.backgroundColor = "hsl(" + hue + ", " + saturation + "%, 50%)";
+			h1.style.color = "hsl(" + hue + ", " + saturation + "%, 80%)";
+		});
+	</script>
+</body>
+</html>

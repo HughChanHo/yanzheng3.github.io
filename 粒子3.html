@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Particle Effect</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script>
+// 创建画布
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// 创建粒子
+var particles = [];
+var particleCount = 100;
+for (var i = 0; i < particleCount; i++) {
+  particles.push(new Particle());
+}
+
+// 绘制粒子
+function drawParticles() {
+  // 清空画布
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // 绘制每个粒子
+  for (var i = 0; i < particles.length; i++) {
+    var particle = particles[i];
+
+    // 计算粒子与鼠标之间的距离和角度
+    var dx = particle.x - mouseX;
+    var dy = particle.y - mouseY;
+    var distance = Math.sqrt(dx * dx + dy * dy);
+    var angle = Math.atan2(dy, dx);
+
+    // 如果距离小于一定值，就让粒子环绕鼠标移动
+    if (distance < 100) {
+      particle.x = mouseX + Math.cos(angle) * 100;
+      particle.y = mouseY + Math.sin(angle) * 100;
+    }
+
+    // 移动粒子
+    particle.move();
+
+    // 绘制粒子
+    ctx.beginPath();
+    ctx.fillStyle = particle.color;
+    ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 重复绘制
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// 记录鼠标位置
+var mouseX = 0;
+var mouseY = 0;
+document.addEventListener("mousemove", function (event) {
+  mouseX = event.clientX;
+  mouseY = event.clientY;
+});
+
+// Particle类
+function Particle() {
+  this.x = Math.random() * canvas.width; // 初始位置x坐标
+  this.y = Math.random() * canvas.height; // 初始位置y坐标
+  this.vx = Math.random() * 2 - 1; // x方向速度
+  this.vy = Math.random() * 2 - 1; // y方向速度
+  this.size = Math.random() * 5 + 5; // 粒子大小
+  this.color =
+    "rgb(" +
+    Math.floor(Math.random() * 256) +
+    "," +
+    Math.floor(Math.random() * 256) +
+    "," +
+    Math.floor(Math.random() * 256) +
+    ")"; // 随机颜色
+
+  // 移动粒子
+  this.move = function () {
+    this.x += this.vx;
+    this.y += this.vy;
+
+    // 如果碰到了画布边缘，就让粒子反弹
+    if (this.x < 0 || this.x > canvas.width) {
+      this.vx = -this.vx;
+    }
+    if (this.y < 0 || this.y > canvas.height) {
+      this.vy = -this.vy;
+    }
+  };
+}
+ </body>
+</html>
